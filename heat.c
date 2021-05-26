@@ -13,6 +13,7 @@
 void xerror(const char *s)
 {
 	if (errno) {
+		fprintf(stderr, "errno=%d\n", errno);
 		perror(s);
 		exit(1);
 	}
@@ -23,15 +24,22 @@ int main(int argc, char **argv)
 	int provided;
 	MPI_Init_thread(&argc, &argv, MPI_THREAD_SINGLE, &provided);
 
+	double t0 = MPI_Wtime();
+
 	assert(argc == 4);
 
 	int X = atoi(argv[1]), Y = atoi(argv[2]);
 	int T = atoi(argv[3]);
 
-	int nprocs;
+	int nprocs, rank;
 	MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
+	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-	assert((X*Y) % nprocs == 0);
+	if ((X*Y) % nprocs != 0) {
+		if (rank == 0)
+			fprintf(stderr, "Domain %d,%d not compatible with %d processes\n", X, Y, nprocs);
+		exit(1);
+	}
 
 	int n = sqrt((X*Y) / nprocs);
 
@@ -52,8 +60,6 @@ int main(int argc, char **argv)
 	int periods[] = {0, 0};
 	MPI_Comm comm_cart;
 	MPI_Cart_create(MPI_COMM_WORLD, 2, dims, periods, 1, &comm_cart);
-
-	int rank;
 	MPI_Comm_rank(comm_cart, &rank);
 
 	int coords[2];
@@ -124,6 +130,7 @@ int main(int argc, char **argv)
 			}
 		}
 
+		errno = 0;
 		for (int j = 1; j <= n; j++) {
 			write(tilefd, &u[j][1], sizeof(double)*n);
 			xerror("tile write");
@@ -132,5 +139,10 @@ int main(int argc, char **argv)
 		void *tmp = u0;
 		u0 = u;
 		u = tmp;
+	}
+
+	if (rank == 0) {
+		double t1 = MPI_Wtime();
+		printf("%e\n", t1-t0);
 	}
 }
