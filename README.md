@@ -73,3 +73,8 @@ To confirm that the results are the same, the following command was used on the
 result.
 
 	$ cmp test1-data/vis.png test2-data/vis.png
+
+## Performance test
+
+The file `heat.sbatch` is a batch job script to run the performance tests. These
+use the parameters `55440 55440 100` with all squares up to 256, excluding 13^2.
