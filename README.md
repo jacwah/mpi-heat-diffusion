@@ -64,7 +64,12 @@ following commands.
 	$ scp t04n27.pdc.kth.se:/cfs/klemming/scratch/j/jacobwah/*.bin .
 	$ python3 vis.py
 
+The resulting visualization is shown below. After 10k timesteps heat as diffused
+from the boundaries into the domain as expected.
+
+![Visualization](test-vis.png)
+
 To confirm that the results are the same, the following command was used on the
-visualized result.
+result.
 
 	$ cmp test1-data/vis.png test2-data/vis.png
