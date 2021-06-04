@@ -183,11 +183,6 @@ int main(int argc, char **argv)
 		u = tmp;
 	}
 
-	if (rank == 0) {
-		double t1 = MPI_Wtime();
-		printf("%e\n", t1-t0);
-	}
-
 #ifndef HEAT_WRITE_ALL
 		errno = 0;
 		for (int j = 1; j <= n; j++) {
@@ -203,4 +198,9 @@ int main(int argc, char **argv)
 	write(idlefd, idle_cycles, sizeof(uint64_t)*T*2);
 	close(idlefd);
 #endif
+
+	if (rank == 0) {
+		double t1 = MPI_Wtime();
+		printf("%e\n", t1-t0);
+	}
 }
