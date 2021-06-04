@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import cm
 import struct
 import math
 
@@ -18,7 +19,9 @@ for i in range(X//n):
             tile = np.reshape(doubles, (T, n, n), "C")
             theta[:, i*n:(i+1)*n,j*n:(j+1)*n] = tile
 
-plt.imshow(theta[-1])
+cmap = cm.get_cmap("plasma")
+plt.imshow(theta[-1], extent=(0,1,0,1), cmap=cmap)
 plt.colorbar()
 
+plt.savefig("vis.png")
 plt.show()
