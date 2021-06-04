@@ -23,17 +23,17 @@ writes the solution at each timestep instead of just at the end.
 Each process owns a square tile of the domain.
 They use a Cartesian communicator with a neighborhood collective. The
 halo exchange is implemented as a single call to `MPI_Neighbor_alltoall`,
-preceeded by copies to a send buffer, and followed by copies from a receive
+preceded by copies to a send buffer, and followed by copies from a receive
 buffer.
 
 ## Output files
 
 One process writes the parameters for domain size, number of timesteps and
 number of processes to the file `heat-meta.bin`. At the end, or at each timestep
-with heat-writeall, the processes write their tile to the file `heat-x-y.bin`
+with `heat-writeall`, the processes write their tile to the file `heat-x-y.bin`
 where `x` and `y` give the coordinate of the tile.
 
-After the execution, the files can be transfered to a local computer and
+After the execution, the files can be transferred to a local computer and
 visualized with the `vis.py` script.
 
 ## Idle period monitoring
@@ -53,7 +53,7 @@ The program takes three parameters: number of mesh points in the x direction,
 number of mesh points in the y direction, and number of timesteps.
 
 I defined the following test cases so as to be able to compare their results to
-each other.
+each other. The only difference between the cases is the domain decomposition.
 
 	$ srun -n 1 ./heat 512 512 10000
 	$ srun -n 256 ./heat 512 512 10000
@@ -64,8 +64,7 @@ following commands.
 	$ scp t04n27.pdc.kth.se:/cfs/klemming/scratch/j/jacobwah/*.bin .
 	$ python3 vis.py
 
-The only difference between the cases is the domain decomposition. To confirm
-that the results are the same, the following command was used on the visualized
-result.
+To confirm that the results are the same, the following command was used on the
+visualized result.
 
 	$ cmp test1-data/vis.png test2-data/vis.png
